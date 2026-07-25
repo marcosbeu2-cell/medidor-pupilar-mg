@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Óticas M&G - Medidor Pupilar Precision 3.0</title>
+    <title>Óticas M&G - Precision DP 3.5 Auto</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Bibliotecas MediaPipe da Google -->
+    <!-- Bibliotecas MediaPipe -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
@@ -31,7 +31,7 @@
         h1 { font-size: 19px; color: #fbbf24; margin-bottom: 2px; }
         p.subtitle { font-size: 11px; color: #94a3b8; margin-bottom: 12px; }
 
-        /* Abas de Navegação */
+        /* Abas */
         .tabs {
             display: flex;
             background: #0f172a;
@@ -57,57 +57,21 @@
             justify-content: center;
             gap: 6px;
         }
-        .tab-btn.active {
-            background: #38bdf8;
-            color: #0f172a;
-        }
+        .tab-btn.active { background: #38bdf8; color: #0f172a; }
 
-        .controls-top {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
+        .controls-top { display: flex; gap: 10px; margin-bottom: 10px; }
         .input-group { text-align: left; flex: 1; }
         .input-group label { font-size: 10px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 4px; display: block; }
         .form-control {
-            width: 100%;
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: white;
-            outline: none;
-            font-size: 13px;
+            width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; font-size: 13px;
         }
 
         .btn-cam-switch {
-            background: #334155;
-            color: #fbbf24;
-            border: 1px solid #475569;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            align-self: flex-end;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            background: #334155; color: #fbbf24; border: 1px solid #475569; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 12px; align-self: flex-end; display: flex; align-items: center; gap: 6px;
         }
 
         .camera-wrapper {
-            position: relative;
-            width: 100%;
-            height: 320px;
-            background: #000;
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #334155;
-            touch-action: none;
+            position: relative; width: 100%; height: 320px; background: #000; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid #334155;
         }
         .camera-wrapper.aligned { border-color: #10b981; }
 
@@ -115,172 +79,60 @@
         canvas { width: 100%; height: 100%; object-fit: cover; }
 
         .face-overlay {
-            position: absolute;
-            width: 160px;
-            height: 220px;
-            border: 3px dashed rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
-            pointer-events: none;
-            box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55);
+            position: absolute; width: 160px; height: 220px; border: 3px dashed rgba(255, 255, 255, 0.4); border-radius: 50%; pointer-events: none; box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55);
         }
 
         .guide-text {
-            position: absolute;
-            bottom: 10px;
-            background: rgba(15, 23, 42, 0.9);
-            color: #fff;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid #334155;
-            pointer-events: none;
+            position: absolute; bottom: 10px; background: rgba(15, 23, 42, 0.9); color: #fff; font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 20px; border: 1px solid #334155; pointer-events: none;
         }
 
         .countdown-overlay {
-            position: absolute;
-            font-size: 80px;
-            font-weight: 800;
-            color: #fbbf24;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-            display: none;
-            pointer-events: none;
+            position: absolute; font-size: 80px; font-weight: 800; color: #fbbf24; text-shadow: 0 4px 20px rgba(0,0,0,0.8); display: none; pointer-events: none;
         }
 
         .btn-start-measure {
-            width: 100%;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
-        .results-box {
-            margin-top: 12px;
-            background: #0f172a;
-            border-radius: 12px;
-            padding: 12px;
-            border: 1px solid #334155;
-        }
+        .results-box { margin-top: 12px; background: #0f172a; border-radius: 12px; padding: 12px; border: 1px solid #334155; }
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 
-        .results-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .metric-card {
-            background: #1e293b;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-        }
+        .metric-card { background: #1e293b; padding: 8px; border-radius: 8px; border: 1px solid #334155; }
         .metric-card .title { font-size: 9px; color: #94a3b8; text-transform: uppercase; font-weight: 700; }
         .metric-card .value { font-size: 18px; color: #38bdf8; font-weight: 800; margin-top: 2px; }
         .metric-card.highlight .value { color: #fbbf24; }
 
         .btn-group { display: flex; gap: 8px; margin-top: 12px; }
-
         .btn-action {
-            flex: 1;
-            background: linear-gradient(135deg, #25d366, #128c7e);
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            flex: 1; background: linear-gradient(135deg, #25d366, #128c7e); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
         }
-        .btn-secondary {
-            background: #334155;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-        }
+        .btn-secondary { background: #334155; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; }
 
-        /* Arquivo de Clientes */
-        .archive-section {
-            margin-top: 16px;
-            text-align: left;
-            background: #0f172a;
-            border-radius: 12px;
-            padding: 12px;
-            border: 1px solid #334155;
-        }
-        .archive-header {
-            font-size: 11px;
-            font-weight: 700;
-            color: #fbbf24;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .archive-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 8px;
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .archive-info { font-size: 11px; }
+        /* Arquivo com Foto */
+        .archive-section { margin-top: 16px; text-align: left; background: #0f172a; border-radius: 12px; padding: 12px; border: 1px solid #334155; }
+        .archive-header { font-size: 11px; font-weight: 700; color: #fbbf24; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .archive-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .archive-thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; border: 1px solid #38bdf8; background: #000; cursor: pointer; }
+        .archive-info { font-size: 11px; flex: 1; }
         .archive-info strong { color: #fff; font-size: 12px; display: block; }
         .archive-info span { color: #94a3b8; font-size: 10px; }
-        .btn-icon {
-            background: #334155;
-            color: #25d366;
-            border: none;
-            padding: 6px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-        }
+        .archive-actions { display: flex; gap: 4px; }
+        .btn-icon { background: #334155; color: #38bdf8; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 11px; }
 
-        .instruction-box {
-            font-size: 11px;
-            color: #38bdf8;
-            background: rgba(56, 189, 248, 0.1);
-            padding: 8px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            display: none;
-            border: 1px solid rgba(56, 189, 248, 0.3);
-        }
+        /* Modal para visualizar foto em alta */
+        .modal { display: none; position: fixed; z-index: 99; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; }
+        .modal-img { max-width: 90%; max-height: 80%; border-radius: 12px; border: 2px solid #fbbf24; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1><i class="fa-solid fa-crosshairs"></i> Precision DP 3.0</h1>
-    <p class="subtitle">Óticas M&G - Sistema de Medição Pupilar</p>
+    <h1><i class="fa-solid fa-crosshairs"></i> Precision DP 3.5</h1>
+    <p class="subtitle">Óticas M&G - Sistema de Medição e Canetão Automático</p>
 
-    <!-- ABAS DE NAVEGAÇÃO -->
     <div class="tabs">
         <button class="tab-btn active" id="tab1" onclick="mudarAba(1)"><i class="fa-solid fa-bolt"></i> 1. Direta (Sem Óculos)</button>
-        <button class="tab-btn" id="tab2" onclick="mudarAba(2)"><i class="fa-solid fa-pen-ruler"></i> 2. Canetão Lente (Com Óculos)</button>
+        <button class="tab-btn" id="tab2" onclick="mudarAba(2)"><i class="fa-solid fa-wand-magic-sparkles"></i> 2. Marcação Auto (Com Óculos)</button>
     </div>
 
     <div class="controls-top">
@@ -289,10 +141,6 @@
             <input type="text" id="cliente_nome" class="form-control" placeholder="Ex: Cliente M&G">
         </div>
         <button class="btn-cam-switch" onclick="alternarCamera()"><i class="fa-solid fa-camera-rotate"></i> Câmera</button>
-    </div>
-
-    <div class="instruction-box" id="instrucao-canetao">
-        👆 <strong>Modo Canetão Ativo:</strong> Tire a foto com o cliente usando a armação. Depois, você poderá <u>arrastar com o dedo</u> as miras na tela para conferir os pontos exatos!
     </div>
 
     <div class="camera-wrapper" id="cam-wrapper">
@@ -306,8 +154,7 @@
     <button class="btn-start-measure" id="btn-iniciar" onclick="iniciarLeituraManual()"><i class="fa-solid fa-play"></i> INICIAR CAPTURA</button>
 
     <div class="results-box">
-        <div style="font-size: 10px; font-weight: bold; color: #fbbf24; text-transform: uppercase;" id="titulo-resultados">Resultados do Cliente:</div>
-        
+        <div style="font-size: 10px; font-weight: bold; color: #fbbf24; text-transform: uppercase;">Resultados do Cliente:</div>
         <div class="results-grid">
             <div class="metric-card">
                 <div class="title">DNP Olho Direito</div>
@@ -335,11 +182,16 @@
 
     <div class="archive-section">
         <div class="archive-header">
-            <span><i class="fa-solid fa-folder-open"></i> Arquivo de Clientes</span>
+            <span><i class="fa-solid fa-folder-open"></i> Arquivo de Clientes & Fotos</span>
             <span onclick="limparHistorico()" style="color:#ef4444; cursor:pointer; font-size:10px;">Limpar</span>
         </div>
         <div id="historico-lista"></div>
     </div>
+</div>
+
+<!-- Modal para ver foto ampliada -->
+<div class="modal" id="modal-foto" onclick="fecharModal()">
+    <img id="img-modal" class="modal-img">
 </div>
 
 <script>
@@ -352,7 +204,7 @@
     const btnIniciar = document.getElementById('btn-iniciar');
 
     const TAMANHO_IRIS_MM = 11.7;
-    let abaAtual = 1; // 1 = Direto, 2 = Canetão Digital
+    let abaAtual = 1; 
     let modoCamera = "user"; 
     let medindoAtivo = false;
     let capturaTravada = false;
@@ -360,14 +212,7 @@
     let timerContagem = null;
     let cameraInstance = null;
     let ultimaMedidaCalculada = null;
-
-    // Pontos Arrastáveis do Canetão Digital (Aba 2)
-    let pontoOD = { x: 0, y: 0 };
-    let pontoOE = { x: 0, y: 0 };
-    let pontoNariz = { x: 0, y: 0 };
-    let linhaBaseAroY = 0;
-    let mmPorPixelRef = 0.1;
-    let pontoSendoArrastado = null; // 'OD', 'OE', 'NARIZ', 'BASE'
+    let ultimaFotoBase64 = null;
 
     const faceMesh = new FaceMesh({
         locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
@@ -386,21 +231,12 @@
         abaAtual = numeroAba;
         document.getElementById('tab1').classList.toggle('active', abaAtual === 1);
         document.getElementById('tab2').classList.toggle('active', abaAtual === 2);
-        
-        document.getElementById('instrucao-canetao').style.display = (abaAtual === 2) ? 'block' : 'none';
         document.getElementById('face-oval').style.display = (abaAtual === 1) ? 'block' : 'none';
-
         reiniciarCaptura();
     }
 
     function onResults(results) {
-        if (capturaTravada) {
-            // No modo Canetão (Aba 2) com foto travada, apenas desenha as miras interativas
-            if (abaAtual === 2) {
-                desenharMirasCanetao();
-            }
-            return;
-        }
+        if (capturaTravada) return;
 
         canvasElement.width = videoElement.videoWidth;
         canvasElement.height = videoElement.videoHeight;
@@ -435,21 +271,11 @@
                 (irisDireitaDireita.y - irisDireitaEsquerda.y) * canvasElement.height
             );
 
-            let estaAlinhado = true;
-
-            if (larguraIrisPixels < 12) {
-                statusText.innerText = "🔍 Aproxime um pouco o celular";
-                statusText.style.background = "rgba(217, 119, 6, 0.9)";
-                estaAlinhado = false;
-            } else if (larguraIrisPixels > 35) {
-                statusText.innerText = "↔️ Afaste um pouco o celular";
-                statusText.style.background = "rgba(217, 119, 6, 0.9)";
-                estaAlinhado = false;
-            }
+            let estaAlinhado = (larguraIrisPixels >= 12 && larguraIrisPixels <= 35);
 
             if (estaAlinhado) {
                 camWrapper.classList.add('aligned');
-                statusText.innerText = "✅ Perfeito! Mantenha-se parado...";
+                statusText.innerText = "✅ Rosto alinhado! Segure parado...";
                 statusText.style.background = "rgba(16, 185, 129, 0.9)";
 
                 if (!emContagem) {
@@ -457,16 +283,17 @@
                 }
             } else {
                 camWrapper.classList.remove('aligned');
+                statusText.innerText = (larguraIrisPixels < 12) ? "🔍 Aproxime o celular" : "↔️ Afaste o celular";
+                statusText.style.background = "rgba(217, 119, 6, 0.9)";
                 cancelarContagem();
             }
 
             desenharPonto(pupilaDireita, "#fbbf24");
             desenharPonto(pupilaEsquerda, "#fbbf24");
-            desenharPonto(ponteNarizLm, "#38bdf8");
 
         } else {
             camWrapper.classList.remove('aligned');
-            statusText.innerText = "Procurando rosto na tela...";
+            statusText.innerText = "Procurando rosto na câmera...";
             statusText.style.background = "rgba(15, 23, 42, 0.9)";
             cancelarContagem();
         }
@@ -477,7 +304,7 @@
         medindoAtivo = true;
         capturaTravada = false;
         btnIniciar.style.display = 'none';
-        statusText.innerText = "Centralize e segure parado...";
+        statusText.innerText = "Alinhando visão...";
     }
 
     function iniciarContagem(landmarks) {
@@ -493,7 +320,7 @@
             } else {
                 clearInterval(timerContagem);
                 countdownEl.style.display = 'none';
-                processarEGravarLeitura(landmarks);
+                processarEGravarAuto(landmarks);
             }
         }, 800);
     }
@@ -504,143 +331,104 @@
         countdownEl.style.display = 'none';
     }
 
-    function processarEGravarLeitura(landmarks) {
+    function processarEGravarAuto(landmarks) {
         capturaTravada = true;
         medindoAtivo = false;
 
-        const pupilaDireita = landmarks[468];
-        const pupilaEsquerda = landmarks[473];
-        const ponteNarizLm = landmarks[6];
+        const pOD = { x: landmarks[468].x * canvasElement.width, y: landmarks[468].y * canvasElement.height };
+        const pOE = { x: landmarks[473].x * canvasElement.width, y: landmarks[473].y * canvasElement.height };
+        const pNariz = { x: landmarks[6].x * canvasElement.width, y: landmarks[6].y * canvasElement.height };
 
-        const irisDireitaEsquerda = landmarks[469];
-        const irisDireitaDireita = landmarks[471];
-
-        const larguraIrisPixels = Math.hypot(
-            (irisDireitaDireita.x - irisDireitaEsquerda.x) * canvasElement.width,
-            (irisDireitaDireita.y - irisDireitaEsquerda.y) * canvasElement.height
+        const irisE = landmarks[469];
+        const irisD = landmarks[471];
+        const larguraIrisPx = Math.hypot(
+            (irisD.x - irisE.x) * canvasElement.width,
+            (irisD.y - irisE.y) * canvasElement.height
         );
 
-        mmPorPixelRef = TAMANHO_IRIS_MM / larguraIrisPixels;
+        const mmPorPixel = TAMANHO_IRIS_MM / larguraIrisPx;
 
-        // Configura coordenadas em pixels
-        pontoOD = { x: pupilaDireita.x * canvasElement.width, y: pupilaDireita.y * canvasElement.height };
-        pontoOE = { x: pupilaEsquerda.x * canvasElement.width, y: pupilaEsquerda.y * canvasElement.height };
-        pontoNariz = { x: ponteNarizLm.x * canvasElement.width, y: ponteNarizLm.y * canvasElement.height };
-        linhaBaseAroY = pontoOD.y + (35 / mmPorPixelRef); // Estimativa inicial da base do aro
+        // Ponto inferior do queixo/face para estimar a borda inferior do aro se estiver de óculos
+        const baseAroEstimadaY = landmarks[152] ? (landmarks[152].y * canvasElement.height * 0.72) : (pOD.y + (35 / mmPorPixel));
 
-        recalcularMedidasPelasMiras();
-
-        statusText.innerText = (abaAtual === 1) ? "📸 FOTO CAPTURADA COM SUCESSO!" : "🎯 CANETÃO DIGITAL ATIVO! Arraste os pontos na tela";
-        statusText.style.background = "rgba(16, 185, 129, 0.95)";
-
-        btnIniciar.style.display = 'flex';
-        btnIniciar.innerHTML = `<i class="fa-solid fa-rotate-right"></i> REPETIR FOTO`;
-    }
-
-    function recalcularMedidasPelasMiras() {
-        const dnpODPixels = Math.abs(pontoOD.x - pontoNariz.x);
-        const dnpOEPixels = Math.abs(pontoOE.x - pontoNariz.x);
-        const dpTotalPixels = Math.abs(pontoOE.x - pontoOD.x);
-        const coPixels = Math.abs(linhaBaseAroY - pontoOD.y);
-
-        const dnpOD = (dnpODPixels * mmPorPixelRef).toFixed(1);
-        const dnpOE = (dnpOEPixels * mmPorPixelRef).toFixed(1);
-        const dpTotal = (dpTotalPixels * mmPorPixelRef).toFixed(1);
-        const co = (coPixels * mmPorPixelRef).toFixed(1);
+        // Cálculo óptico
+        const dnpOD = (Math.abs(pOD.x - pNariz.x) * mmPorPixel).toFixed(1);
+        const dnpOE = (Math.abs(pOE.x - pNariz.x) * mmPorPixel).toFixed(1);
+        const dpTotal = (Math.abs(pOE.x - pOD.x) * mmPorPixel).toFixed(1);
+        const co = (Math.abs(baseAroEstimadaY - pOD.y) * mmPorPixel).toFixed(1);
 
         document.getElementById('val-dnp-od').innerText = dnpOD + " mm";
         document.getElementById('val-dnp-oe').innerText = dnpOE + " mm";
         document.getElementById('val-dp-total').innerText = dpTotal + " mm";
         document.getElementById('val-co').innerText = co + " mm";
 
+        // DESENHAR MARCAÇÃO AUTOMÁTICA DE CANETÃO SE FOR ABA 2
+        if (abaAtual === 2) {
+            desenharCanetaoAutomatico(pOD, pOE, pNariz, baseAroEstimadaY);
+        }
+
+        // Salvar a foto capturada
+        ultimaFotoBase64 = canvasElement.toDataURL("image/jpeg", 0.85);
+
         let nome = document.getElementById('cliente_nome').value.trim() || "Cliente M&G";
         let dataHora = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-        
-        let modoTexto = (abaAtual === 1) ? "Direta" : "Canetão na Armação";
-        ultimaMedidaCalculada = { nome, dnpOD, dnpOE, dpTotal, co, data: `${dataHora} (${modoTexto})` };
+        let modoTexto = (abaAtual === 1) ? "Direta" : "Canetão Auto";
+
+        ultimaMedidaCalculada = { nome, dnpOD, dnpOE, dpTotal, co, data: `${dataHora} (${modoTexto})`, foto: ultimaFotoBase64 };
 
         salvarNoHistorico(ultimaMedidaCalculada);
+
+        statusText.innerText = "📸 FOTO E MEDIDAS SALVAS!";
+        statusText.style.background = "rgba(16, 185, 129, 0.95)";
+
+        btnIniciar.style.display = 'flex';
+        btnIniciar.innerHTML = `<i class="fa-solid fa-rotate-right"></i> NOVA CAPTURA`;
     }
 
-    // DESENHA O CANETÃO DIGITAL INTERATIVO NA TELA (ABA 2)
-    function desenharMirasCanetao() {
-        // Redesenha os pontos
-        desenharMira(pontoOD.x, pontoOD.y, "#fbbf24", "OD");
-        desenharMira(pontoOE.x, pontoOE.y, "#fbbf24", "OE");
-        desenharMira(pontoNariz.x, pontoNariz.y, "#38bdf8", "Nariz");
+    function desenharCanetaoAutomatico(pOD, pOE, pNariz, baseAroY) {
+        // Miras das pupilas (Cruzes Amarelas estilo laboratório)
+        desenharCruzMira(pOD.x, pOD.y, "#fbbf24", "OD");
+        desenharCruzMira(pOE.x, pOE.y, "#fbbf24", "OE");
+        desenharCruzMira(pNariz.x, pNariz.y, "#38bdf8", "Eixo Nariz");
 
-        // Desenha linha da base da armação
+        // Linha do Centro Óptico (CO) na Base da Armação
         canvasCtx.beginPath();
-        canvasCtx.moveTo(0, linhaBaseAroY);
-        canvasCtx.lineTo(canvasElement.width, linhaBaseAroY);
+        canvasCtx.moveTo(pOD.x - 40, baseAroY);
+        canvasCtx.lineTo(pOE.x + 40, baseAroY);
         canvasCtx.strokeStyle = "#ef4444";
-        canvasCtx.lineWidth = 2;
-        canvasCtx.setLineDash([6, 6]);
+        canvasCtx.lineWidth = 3;
         canvasCtx.stroke();
-        canvasCtx.setLineDash([]);
 
         canvasCtx.fillStyle = "#ef4444";
-        canvasCtx.font = "bold 12px Inter";
-        canvasCtx.fillText("↕ Base do Aro (CO)", 10, linhaBaseAroY - 6);
+        canvasCtx.font = "bold 11px Inter";
+        canvasCtx.fillText(" Base do Aro", pOD.x - 40, baseAroY + 14);
     }
 
-    function desenharMira(x, y, cor, rotulo) {
+    function desenharCruzMira(x, y, cor, texto) {
         canvasCtx.beginPath();
-        canvasCtx.arc(x, y, 14, 0, 2 * Math.PI);
-        canvasCtx.fillStyle = "rgba(0,0,0,0.4)";
-        canvasCtx.fill();
+        canvasCtx.arc(x, y, 12, 0, 2 * Math.PI);
         canvasCtx.strokeStyle = cor;
         canvasCtx.lineWidth = 2;
         canvasCtx.stroke();
 
-        // Cruz
         canvasCtx.beginPath();
-        canvasCtx.moveTo(x - 20, y); canvasCtx.lineTo(x + 20, y);
-        canvasCtx.moveTo(x, y - 20); canvasCtx.lineTo(x, y + 20);
+        canvasCtx.moveTo(x - 18, y); canvasCtx.lineTo(x + 18, y);
+        canvasCtx.moveTo(x, y - 18); canvasCtx.lineTo(x, y + 18);
         canvasCtx.strokeStyle = cor;
         canvasCtx.lineWidth = 1.5;
         canvasCtx.stroke();
 
         canvasCtx.fillStyle = cor;
-        canvasCtx.font = "bold 11px Inter";
-        canvasCtx.fillText(rotulo, x + 16, y + 4);
+        canvasCtx.font = "bold 10px Inter";
+        canvasCtx.fillText(texto, x + 14, y - 4);
     }
 
-    function desenharPonto(landmark, cor) {
+    function desenharPonto(lm, cor) {
         canvasCtx.beginPath();
-        canvasCtx.arc(landmark.x * canvasElement.width, landmark.y * canvasElement.height, 4, 0, 2 * Math.PI);
+        canvasCtx.arc(lm.x * canvasElement.width, lm.y * canvasElement.height, 4, 0, 2 * Math.PI);
         canvasCtx.fillStyle = cor;
         canvasCtx.fill();
     }
-
-    // ARRASTAR COM O DEDO NO CANVAS (EVENTOS DE TOQUE)
-    canvasElement.addEventListener('pointerdown', (e) => {
-        if (!capturaTravada || abaAtual !== 2) return;
-        const rect = canvasElement.getBoundingClientRect();
-        const touchX = (e.clientX - rect.left) * (canvasElement.width / rect.width);
-        const touchY = (e.clientY - rect.top) * (canvasElement.height / rect.height);
-
-        if (Math.hypot(touchX - pontoOD.x, touchY - pontoOD.y) < 30) pontoSendoArrastado = 'OD';
-        else if (Math.hypot(touchX - pontoOE.x, touchY - pontoOE.y) < 30) pontoSendoArrastado = 'OE';
-        else if (Math.hypot(touchX - pontoNariz.x, touchY - pontoNariz.y) < 30) pontoSendoArrastado = 'NARIZ';
-        else if (Math.abs(touchY - linhaBaseAroY) < 25) pontoSendoArrastado = 'BASE';
-    });
-
-    canvasElement.addEventListener('pointermove', (e) => {
-        if (!pontoSendoArrastado) return;
-        const rect = canvasElement.getBoundingClientRect();
-        const touchX = (e.clientX - rect.left) * (canvasElement.width / rect.width);
-        const touchY = (e.clientY - rect.top) * (canvasElement.height / rect.height);
-
-        if (pontoSendoArrastado === 'OD') { pontoOD.x = touchX; pontoOD.y = touchY; }
-        else if (pontoSendoArrastado === 'OE') { pontoOE.x = touchX; pontoOE.y = touchY; }
-        else if (pontoSendoArrastado === 'NARIZ') { pontoNariz.x = touchX; }
-        else if (pontoSendoArrastado === 'BASE') { linhaBaseAroY = touchY; }
-
-        recalcularMedidasPelasMiras();
-    });
-
-    canvasElement.addEventListener('pointerup', () => { pontoSendoArrastado = null; });
 
     function reiniciarCaptura() {
         capturaTravada = false;
@@ -657,13 +445,9 @@
     }
 
     function iniciarCamera() {
-        if (cameraInstance) {
-            cameraInstance.stop();
-        }
+        if (cameraInstance) cameraInstance.stop();
         cameraInstance = new Camera(videoElement, {
-            onFrame: async () => {
-                await faceMesh.send({ image: videoElement });
-            },
+            onFrame: async () => { await faceMesh.send({ image: videoElement }); },
             facingMode: modoCamera,
             width: 640,
             height: 480
@@ -674,6 +458,8 @@
     function salvarNoHistorico(medida) {
         let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
         historico.unshift(medida);
+        // Mantém os últimos 20 registros
+        if (historico.length > 20) historico.pop();
         localStorage.setItem('mg_pupila_arquivos', JSON.stringify(historico));
         renderizarHistorico();
     }
@@ -684,24 +470,47 @@
         container.innerHTML = "";
 
         if (historico.length === 0) {
-            container.innerHTML = `<div style="font-size:11px; color:#94a3b8; padding:5px;">Nenhum cliente no arquivo.</div>`;
+            container.innerHTML = `<div style="font-size:11px; color:#94a3b8; padding:5px;">Nenhum cliente salvo.</div>`;
             return;
         }
 
         historico.forEach((h, index) => {
+            const fotoHtml = h.foto ? `<img src="${h.foto}" class="archive-thumb" onclick="abrirModal('${h.foto}')" title="Clique para ampliar">` : '';
             container.innerHTML += `
                 <div class="archive-card">
+                    ${fotoHtml}
                     <div class="archive-info">
                         <strong>${h.nome}</strong>
                         <span>DP: ${h.dpTotal}mm (OD: ${h.dnpOD} | OE: ${h.dnpOE}) - CO: ${h.co}mm</span><br>
                         <span style="font-size:9px; color:#64748b;">${h.data}</span>
                     </div>
-                    <div>
-                        <button class="btn-icon" onclick="reenviarWhatsIndex(${index})" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                    <div class="archive-actions">
+                        <button class="btn-icon" onclick="downloadFicha(${index})" title="Baixar Foto"><i class="fa-solid fa-download"></i></button>
+                        <button class="btn-icon" style="color:#25d366;" onclick="reenviarWhatsIndex(${index})" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
                     </div>
                 </div>
             `;
         });
+    }
+
+    function abrirModal(fotoBase64) {
+        document.getElementById('img-modal').src = fotoBase64;
+        document.getElementById('modal-foto').style.display = 'flex';
+    }
+
+    function fecharModal() {
+        document.getElementById('modal-foto').style.display = 'none';
+    }
+
+    function downloadFicha(index) {
+        let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
+        let m = historico[index];
+        if (!m || !m.foto) return;
+
+        const a = document.createElement('a');
+        a.href = m.foto;
+        a.download = `Medicao_MG_${m.nome.replace(/\s+/g, '_')}.jpg`;
+        a.click();
     }
 
     function reenviarWhatsIndex(index) {
