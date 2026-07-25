@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Óticas M&G - Medidor Pupilar Precision 2.0</title>
+    <title>Óticas M&G - Medidor Pupilar Precision 2.1</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -31,10 +31,44 @@
         h1 { font-size: 20px; color: #fbbf24; margin-bottom: 4px; }
         p.subtitle { font-size: 12px; color: #94a3b8; margin-bottom: 15px; }
 
+        .controls-top {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .input-group { text-align: left; flex: 1; }
+        .input-group label { font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 5px; display: block; }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .btn-cam-switch {
+            background: #334155;
+            color: #fbbf24;
+            border: 1px solid #475569;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            align-self: flex-end;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .camera-wrapper {
             position: relative;
             width: 100%;
-            height: 360px;
+            height: 340px;
             background: #000;
             border-radius: 16px;
             overflow: hidden;
@@ -51,8 +85,8 @@
 
         .face-overlay {
             position: absolute;
-            width: 180px;
-            height: 240px;
+            width: 170px;
+            height: 230px;
             border: 3px dashed rgba(255, 255, 255, 0.4);
             border-radius: 50%;
             pointer-events: none;
@@ -83,17 +117,22 @@
             display: none;
         }
 
-        .input-group { margin-top: 15px; text-align: left; }
-        .input-group label { font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 5px; display: block; }
-        .form-control {
+        .btn-start-measure {
             width: 100%;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            background: #0f172a;
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
-            outline: none;
-            font-size: 14px;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
         .results-box {
@@ -125,7 +164,7 @@
 
         .btn-action {
             flex: 1;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+            background: linear-gradient(135deg, #25d366, #128c7e);
             color: white;
             border: none;
             padding: 12px;
@@ -149,7 +188,8 @@
             cursor: pointer;
         }
 
-        .history-section {
+        /* Arquivo de Clientes */
+        .archive-section {
             margin-top: 20px;
             text-align: left;
             background: #0f172a;
@@ -157,19 +197,53 @@
             padding: 15px;
             border: 1px solid #334155;
         }
-        .history-title { font-size: 12px; font-weight: 700; color: #fbbf24; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; }
-        .history-item { font-size: 12px; padding: 8px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; color: #cbd5e1; }
+        .archive-header {
+            font-size: 12px;
+            font-weight: 700;
+            color: #fbbf24;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .archive-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .archive-info { font-size: 12px; }
+        .archive-info strong { color: #fff; font-size: 13px; display: block; }
+        .archive-info span { color: #94a3b8; font-size: 11px; }
+        .archive-actions { display: flex; gap: 6px; }
+        .btn-icon {
+            background: #334155;
+            color: #fbbf24;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1><i class="fa-solid fa-crosshairs"></i> Precision DP 2.0</h1>
-    <p class="subtitle">Alinhe seu rosto no círculo para leitura automática</p>
+    <h1><i class="fa-solid fa-crosshairs"></i> Precision DP 2.1</h1>
+    <p class="subtitle">Óticas M&G - Medidor Pupilar Independente</p>
 
-    <div class="input-group">
-        <label>Nome do Cliente</label>
-        <input type="text" id="cliente_nome" class="form-control" placeholder="Ex: João Souza">
+    <div class="controls-top">
+        <div class="input-group">
+            <label>Nome do Cliente</label>
+            <input type="text" id="cliente_nome" class="form-control" placeholder="Ex: Maria Silva">
+        </div>
+        <button class="btn-cam-switch" onclick="alternarCamera()"><i class="fa-solid fa-camera-rotate"></i> Câmera</button>
     </div>
 
     <div class="camera-wrapper" id="cam-wrapper">
@@ -177,11 +251,13 @@
         <canvas id="canvas"></canvas>
         <div class="face-overlay"></div>
         <div class="countdown-overlay" id="countdown">3</div>
-        <div class="guide-text" id="status-text">Iniciando câmera...</div>
+        <div class="guide-text" id="status-text">Aguardando início... Clique no botão abaixo</div>
     </div>
 
+    <button class="btn-start-measure" id="btn-iniciar" onclick="iniciarLeituraManual()"><i class="fa-solid fa-play"></i> INICIAR MEDIÇÃO</button>
+
     <div class="results-box">
-        <div style="font-size: 11px; font-weight: bold; color: #fbbf24; text-transform: uppercase;">Resultados da Leitura Estática:</div>
+        <div style="font-size: 11px; font-weight: bold; color: #fbbf24; text-transform: uppercase;">Resultados do Cliente:</div>
         
         <div class="results-grid">
             <div class="metric-card">
@@ -204,14 +280,15 @@
     </div>
 
     <div class="btn-group">
-        <button class="btn-secondary" onclick="reiniciarCaptura()"><i class="fa-solid fa-rotate-right"></i> Nova Foto</button>
+        <button class="btn-secondary" onclick="reiniciarCaptura()"><i class="fa-solid fa-rotate-right"></i> Nova Leitura</button>
         <button class="btn-action" onclick="enviarWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp</button>
     </div>
 
-    <div class="history-section">
-        <div class="history-title">
-            <span><i class="fa-solid fa-clock-rotate-left"></i> Histórico Salvo</span>
-            <span onclick="limparHistorico()" style="color:#ef4444; cursor:pointer; font-size:10px;">Limpar</span>
+    <!-- ABA DE CLIENTES ARQUIVADOS -->
+    <div class="archive-section">
+        <div class="archive-header">
+            <span><i class="fa-solid fa-folder-open"></i> Arquivo de Clientes Salvos</span>
+            <span onclick="limparHistorico()" style="color:#ef4444; cursor:pointer; font-size:10px;">Limpar Tudo</span>
         </div>
         <div id="historico-lista"></div>
     </div>
@@ -224,12 +301,15 @@
     const statusText = document.getElementById('status-text');
     const camWrapper = document.getElementById('cam-wrapper');
     const countdownEl = document.getElementById('countdown');
+    const btnIniciar = document.getElementById('btn-iniciar');
 
-    const TAMANHO_IRIS_MM = 11.7; // Padrão biológico horizontal da íris
+    const TAMANHO_IRIS_MM = 11.7;
+    let modoCamera = "user"; // "user" (frontal) ou "environment" (traseira)
+    let medindoAtivo = false; // Controle manual do botão "Iniciar"
     let capturaTravada = false;
     let emContagem = false;
-    let tempoAlinhado = 0;
     let timerContagem = null;
+    let cameraInstance = null;
     let ultimaMedidaCalculada = null;
 
     const faceMesh = new FaceMesh({
@@ -246,14 +326,27 @@
     faceMesh.onResults(onResults);
 
     function onResults(results) {
-        if (capturaTravada) return; // Não atualiza se a foto já foi tirada
+        if (capturaTravada) return;
 
         canvasElement.width = videoElement.videoWidth;
         canvasElement.height = videoElement.videoHeight;
 
         canvasCtx.save();
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+        // Se for câmera frontal, espelha para navegação natural
+        if (modoCamera === "user") {
+            canvasCtx.translate(canvasElement.width, 0);
+            canvasCtx.scale(-1, 1);
+        }
+
         canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+        // Só processa se o usuário clicou em INICIAR
+        if (!medindoAtivo) {
+            canvasCtx.restore();
+            return;
+        }
 
         if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
             const landmarks = results.multiFaceLandmarks[0];
@@ -265,10 +358,8 @@
             const irisDireitaEsquerda = landmarks[469];
             const irisDireitaDireita = landmarks[471];
 
-            // 1. Verifica Inclinação da Cabeça (Diferença no eito Y entre os olhos)
             const inclinacaoY = Math.abs((pupilaDireita.y - pupilaEsquerda.y) * canvasElement.height);
             
-            // 2. Verifica Distância do Rosto pelo Tamanho da Íris em Pixels
             const larguraIrisPixels = Math.hypot(
                 (irisDireitaDireita.x - irisDireitaEsquerda.x) * canvasElement.width,
                 (irisDireitaDireita.y - irisDireitaEsquerda.y) * canvasElement.height
@@ -277,11 +368,11 @@
             let estaAlinhado = true;
 
             if (inclinacaoY > 6) {
-                statusText.innerText = "⚠️ Mantenha a cabeça reta (não incline)";
+                statusText.innerText = "⚠️ Mantenha a cabeça reta (sem inclinar)";
                 statusText.style.background = "rgba(225, 29, 72, 0.9)";
                 estaAlinhado = false;
             } else if (larguraIrisPixels < 12) {
-                statusText.innerText = "🔍 Aproxime um pouco mais o rosto";
+                statusText.innerText = "🔍 Aproxime um pouco o celular";
                 statusText.style.background = "rgba(217, 119, 6, 0.9)";
                 estaAlinhado = false;
             } else if (larguraIrisPixels > 35) {
@@ -295,7 +386,6 @@
                 statusText.innerText = "✅ Perfeito! Mantenha-se parado...";
                 statusText.style.background = "rgba(16, 185, 129, 0.9)";
 
-                // Inicia o processo de disparo automático
                 if (!emContagem) {
                     iniciarContagem(landmarks);
                 }
@@ -304,18 +394,24 @@
                 cancelarContagem();
             }
 
-            // Desenha guias visuais
             desenharPonto(pupilaDireita, "#fbbf24");
             desenharPonto(pupilaEsquerda, "#fbbf24");
             desenharPonto(ponteNariz, "#38bdf8");
 
         } else {
             camWrapper.classList.remove('aligned');
-            statusText.innerText = "Centralize seu rosto no círculo...";
+            statusText.innerText = "Procurando rosto na tela...";
             statusText.style.background = "rgba(15, 23, 42, 0.9)";
             cancelarContagem();
         }
         canvasCtx.restore();
+    }
+
+    function iniciarLeituraManual() {
+        medindoAtivo = true;
+        capturaTravada = false;
+        btnIniciar.style.display = 'none';
+        statusText.innerText = "Alinhe o rosto dentro do círculo...";
     }
 
     function iniciarContagem(landmarks) {
@@ -344,6 +440,7 @@
 
     function processarEGravarLeitura(landmarks) {
         capturaTravada = true;
+        medindoAtivo = false;
 
         const pupilaDireita = landmarks[468];
         const pupilaEsquerda = landmarks[473];
@@ -374,13 +471,17 @@
         document.getElementById('val-dp-total').innerText = dpTotal + " mm";
         document.getElementById('val-co').innerText = co + " mm";
 
-        statusText.innerText = "📸 FOTO CAPTURADA COM SUCESSO!";
+        statusText.innerText = "📸 LEITURA CONCLUÍDA E SALVA!";
         statusText.style.background = "rgba(16, 185, 129, 0.95)";
 
         let nome = document.getElementById('cliente_nome').value.trim() || "Cliente Sem Nome";
-        ultimaMedidaCalculada = { nome, dnpOD, dnpOE, dpTotal, co, data: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) };
+        let dataHora = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        
+        ultimaMedidaCalculada = { nome, dnpOD, dnpOE, dpTotal, co, data: dataHora };
 
         salvarNoHistorico(ultimaMedidaCalculada);
+        btnIniciar.style.display = 'flex';
+        btnIniciar.innerHTML = `<i class="fa-solid fa-rotate-right"></i> REPETIR MEDIÇÃO`;
     }
 
     function desenharPonto(landmark, cor) {
@@ -392,63 +493,91 @@
 
     function reiniciarCaptura() {
         capturaTravada = false;
-        emContagem = false;
-        statusText.innerText = "Centralize seu rosto no círculo...";
+        medindoAtivo = false;
+        statusText.innerText = "Aguardando início... Clique no botão abaixo";
         camWrapper.classList.remove('aligned');
+        btnIniciar.style.display = 'flex';
+        btnIniciar.innerHTML = `<i class="fa-solid fa-play"></i> INICIAR MEDIÇÃO`;
+    }
+
+    function alternarCamera() {
+        modoCamera = (modoCamera === "user") ? "environment" : "user";
+        iniciarCamera();
+    }
+
+    function iniciarCamera() {
+        if (cameraInstance) {
+            cameraInstance.stop();
+        }
+        cameraInstance = new Camera(videoElement, {
+            onFrame: async () => {
+                await faceMesh.send({ image: videoElement });
+            },
+            facingMode: modoCamera,
+            width: 640,
+            height: 480
+        });
+        cameraInstance.start();
     }
 
     function salvarNoHistorico(medida) {
-        let historico = JSON.parse(localStorage.getItem('mg_pupila_historico') || '[]');
+        let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
         historico.unshift(medida);
-        localStorage.setItem('mg_pupila_historico', JSON.stringify(historico));
+        localStorage.setItem('mg_pupila_arquivos', JSON.stringify(historico));
         renderizarHistorico();
     }
 
     function renderizarHistorico() {
-        let historico = JSON.parse(localStorage.getItem('mg_pupila_historico') || '[]');
+        let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
         const container = document.getElementById('historico-lista');
         container.innerHTML = "";
 
         if (historico.length === 0) {
-            container.innerHTML = `<div class="history-item"><span>Nenhuma medição gravada.</span></div>`;
+            container.innerHTML = `<div style="font-size:12px; color:#94a3b8; padding:5px;">Nenhum cliente arquivado.</div>`;
             return;
         }
 
-        historico.slice(0, 5).forEach(h => {
+        historico.forEach((h, index) => {
             container.innerHTML += `
-                <div class="history-item">
-                    <span><strong>${h.nome}</strong> (${h.data})</span>
-                    <span style="color:#fbbf24; font-weight:700;">DP: ${h.dpTotal}mm | OD: ${h.dnpOD} | OE: ${h.dnpOE}</span>
+                <div class="archive-card">
+                    <div class="archive-info">
+                        <strong>${h.nome}</strong>
+                        <span>DP: ${h.dpTotal}mm (OD: ${h.dnpOD} | OE: ${h.dnpOE}) - CO: ${h.co}mm</span><br>
+                        <span style="font-size:10px; color:#64748b;">${h.data}</span>
+                    </div>
+                    <div class="archive-actions">
+                        <button class="btn-icon" onclick="reenviarWhatsIndex(${index})" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                    </div>
                 </div>
             `;
         });
     }
 
+    function reenviarWhatsIndex(index) {
+        let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
+        let m = historico[index];
+        if (!m) return;
+        const texto = `📐 *Medidas Ópticas Arquivadas (Óticas M&G)*\n\n👤 *Cliente:* ${m.nome}\n👁️ *DNP Olho Direito:* ${m.dnpOD} mm\n👁️ *DNP Olho Esquerdo:* ${m.dnpOE} mm\n📏 *DP Total:* ${m.dpTotal} mm\n🎯 *Altura Focal (CO):* ${m.co} mm\n📅 *Data:* ${m.data}`;
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
+    }
+
     function limparHistorico() {
-        localStorage.removeItem('mg_pupila_historico');
-        renderizarHistorico();
+        if(confirm("Tem certeza que deseja apagar todo o arquivo de clientes?")) {
+            localStorage.removeItem('mg_pupila_arquivos');
+            renderizarHistorico();
+        }
     }
 
     function enviarWhatsApp() {
         if (!ultimaMedidaCalculada) {
-            alert("Tire uma foto primeiro para gerar os dados do cliente.");
+            alert("Realize a medição de um cliente primeiro.");
             return;
         }
-        const m = ultimaMedidaCalculada;
-        const texto = `📐 *Medidas Ópticas de Precision (Óticas M&G)*\n\n👤 *Cliente:* ${m.nome}\n👁️ *DNP Olho Direito:* ${m.dnpOD} mm\n👁️ *DNP Olho Esquerdo:* ${m.dnpOE} mm\n📏 *DP Total:* ${m.dpTotal} mm\n🎯 *Altura Focal (CO):* ${m.co} mm`;
-        
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
+        reenviarWhatsIndex(0);
     }
 
-    const camera = new Camera(videoElement, {
-        onFrame: async () => {
-            await faceMesh.send({ image: videoElement });
-        },
-        width: 640,
-        height: 480
-    });
-    camera.start();
-
+    // Inicialização
+    iniciarCamera();
     renderizarHistorico();
 </script>
 </body>
