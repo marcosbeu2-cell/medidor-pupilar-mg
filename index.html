@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Óticas M&G - Precision DP 6.1 (Smooth)</title>
+    <title>Óticas M&G - Precision DP 7.0 Cloud</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,6 +11,10 @@
     <!-- Bibliotecas MediaPipe -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+
+    <!-- SDK do Firebase em Modo Web Compatível -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -72,8 +76,8 @@
 <body>
 
 <div class="container">
-    <h1><i class="fa-solid fa-crosshairs"></i> Precision DP 6.1</h1>
-    <p class="subtitle">Óticas M&G - Mapeamento Estável Sem Travamentos</p>
+    <h1><i class="fa-solid fa-cloud"></i> Precision DP 7.0 Cloud</h1>
+    <p class="subtitle">Óticas M&G - Sincronização em Tempo Real na Nuvem</p>
 
     <div class="tabs">
         <button class="tab-btn active" id="tab1" onclick="mudarAba(1)"><i class="fa-solid fa-bolt"></i> 1. Direta (Sem Óculos)</button>
@@ -125,10 +129,11 @@
 
     <div class="archive-section">
         <div class="archive-header">
-            <span><i class="fa-solid fa-folder-open"></i> Arquivo de Clientes & Fotos</span>
-            <span onclick="limparHistorico()" style="color:#ef4444; cursor:pointer; font-size:10px;">Limpar</span>
+            <span><i class="fa-solid fa-cloud-arrow-down"></i> Histórico na Nuvem (Compartilhado)</span>
         </div>
-        <div id="historico-lista"></div>
+        <div id="historico-lista">
+            <div style="font-size:11px; color:#94a3b8; padding:5px;">Conectando ao banco de dados...</div>
+        </div>
     </div>
 </div>
 
@@ -137,6 +142,21 @@
 </div>
 
 <script>
+    // --- CONFIGURAÇÃO FIREBASE DO SEU PROJETO ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyArxq9I-wc07D6AN2k6K__t5beFtyBLhSk",
+      authDomain: "oticasmg-579b9.firebaseapp.com",
+      projectId: "oticasmg-579b9",
+      storageBucket: "oticasmg-579b9.firebasestorage.app",
+      messagingSenderId: "265099165855",
+      appId: "1:265099165855:web:f96d319f7f0cbfeac1e2aa",
+      measurementId: "G-1DBGGHCF6Q"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Variaveis da Camera e IA
     const videoElement = document.getElementById('video');
     const canvasElement = document.getElementById('canvas');
     const canvasCtx = canvasElement.getContext('2d');
@@ -149,13 +169,9 @@
     let fotoTirada = false;
     let processandoIA = false;
     let cameraStream = null;
+    let listaHistoricoCache = [];
 
-    let pontos = {
-        pOD: { x: 0, y: 0 },
-        pOE: { x: 0, y: 0 },
-        pNariz: { x: 0, y: 0 },
-        baseAroY: 0
-    };
+    let pontos = { pOD: { x: 0, y: 0 }, pOE: { x: 0, y: 0 }, pNariz: { x: 0, y: 0 }, baseAroY: 0 };
     let pontoArrastando = null;
     let mmPorPixel = 0.1;
     let imagemCongelada = null;
@@ -164,12 +180,7 @@
         locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
     });
 
-    faceMesh.setOptions({
-        maxNumFaces: 1,
-        refineLandmarks: true,
-        minDetectionConfidence: 0.5
-    });
-
+    faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5 });
     faceMesh.onResults(onResultsMediaPipe);
 
     function mudarAba(numeroAba) {
@@ -190,9 +201,7 @@
 
     async function iniciarCamera() {
         await encerrarCamera();
-        const constraints = {
-            video: { facingMode: modoCamera, width: { ideal: 1280 }, height: { ideal: 720 } }
-        };
+        const constraints = { video: { facingMode: modoCamera, width: { ideal: 1280 }, height: { ideal: 720 } } };
         try {
             cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
             videoElement.srcObject = cameraStream;
@@ -226,7 +235,7 @@
                 reiniciarCaptura();
             });
         };
-        imagemCongelada.src = canvasElement.toDataURL("image/jpeg", 0.9);
+        imagemCongelada.src = canvasElement.toDataURL("image/jpeg", 0.85);
 
         statusText.innerText = "🤖 Analisando foto...";
         statusText.style.background = "rgba(217, 119, 6, 0.9)";
@@ -253,9 +262,9 @@
             pontos.baseAroY = pontos.pOD.y + (32 / mmPorPixel); 
 
             fotoTirada = true;
-            recalcularEDesenhar();
+            recalcularEDesenhar(true);
 
-            statusText.innerText = (abaAtual === 1) ? "✅ DNP / DP Calculadas com Sucesso!" : "🎯 Miras Aplicadas! Arraste com o dedo se precisar";
+            statusText.innerText = (abaAtual === 1) ? "✅ DNP / DP Calculadas!" : "🎯 Miras Aplicadas! Ajuste se precisar";
             statusText.style.background = "rgba(16, 185, 129, 0.95)";
             btnIniciar.style.display = 'none';
 
@@ -267,7 +276,7 @@
         }
     }
 
-    function recalcularEDesenhar() {
+    function recalcularEDesenhar(salvarNuvem = false) {
         if (!imagemCongelada) return;
 
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -312,7 +321,9 @@
             canvasCtx.fillText("Base do Aro", pontos.pOD.x - 50, pontos.baseAroY + 16);
         }
 
-        salvarRegistroAtual(dnpOD, dnpOE, dpTotal, (abaAtual === 2 ? co : "N/A"));
+        if (salvarNuvem) {
+            salvarNoFirestore(dnpOD, dnpOE, dpTotal, (abaAtual === 2 ? co : "N/A"));
+        }
     }
 
     function desenharPontoDiscreto(x, y, cor) {
@@ -344,6 +355,7 @@
         canvasCtx.fillText(texto, x + 16, y - 6);
     }
 
+    // ARRASTAR DEDO NO TOUCH
     canvasElement.addEventListener('pointerdown', (e) => {
         if (!fotoTirada) return;
         const rect = canvasElement.getBoundingClientRect();
@@ -375,61 +387,79 @@
             pontos[pontoArrastando].y = mouseY;
         }
 
-        recalcularEDesenhar();
+        recalcularEDesenhar(false);
     });
 
-    canvasElement.addEventListener('pointerup', () => { pontoArrastando = null; });
+    canvasElement.addEventListener('pointerup', () => { 
+        if (pontoArrastando) {
+            pontoArrastando = null;
+            // Atualiza no banco ao soltar o dedo
+            let xOD = pontos.pOD.x, xOE = pontos.pOE.x, xNariz = pontos.pNariz.x;
+            if (xOD > xOE) { let t = xOD; xOD = xOE; xOE = t; }
+            const dnpOD = (Math.abs(xOD - xNariz) * mmPorPixel).toFixed(1);
+            const dnpOE = (Math.abs(xOE - xNariz) * mmPorPixel).toFixed(1);
+            const dpTotal = (Math.abs(xOE - xOD) * mmPorPixel).toFixed(1);
+            const co = (Math.abs(pontos.baseAroY - pontos.pOD.y) * mmPorPixel).toFixed(1);
+            salvarNoFirestore(dnpOD, dnpOE, dpTotal, (abaAtual === 2 ? co : "N/A"));
+        }
+    });
 
-    function salvarRegistroAtual(dnpOD, dnpOE, dpTotal, co) {
+    // --- FUNÇÕES DE NUVEM FIREBASE ---
+    function salvarNoFirestore(dnpOD, dnpOE, dpTotal, co) {
         let nome = document.getElementById('cliente_nome').value.trim() || "Cliente M&G";
         let dataHora = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
         let modoTexto = (abaAtual === 1) ? "Direta" : "Com Óculos";
-        let fotoBase64 = canvasElement.toDataURL("image/jpeg", 0.65); // Compressão otimizada
+        let fotoBase64 = canvasElement.toDataURL("image/jpeg", 0.5); // Foto otimizada para nuvem
 
-        let registro = { nome, dnpOD, dnpOE, dpTotal, co, data: `${dataHora} (${modoTexto})`, foto: fotoBase64 };
-
-        let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
-        
-        // Remove item duplicado do mesmo ciclo recente se existir
-        if (historico.length > 0 && historico[0].nome === nome && historico[0].data === registro.data) {
-            historico[0] = registro;
-        } else {
-            historico.unshift(registro);
-        }
-
-        if (historico.length > 15) historico.pop();
-        localStorage.setItem('mg_pupila_arquivos', JSON.stringify(historico));
-
-        renderizarHistorico();
+        db.collection("medicoes").add({
+            nome: nome,
+            dnpOD: dnpOD,
+            dnpOE: dnpOE,
+            dpTotal: dpTotal,
+            co: co,
+            data: `${dataHora} (${modoTexto})`,
+            foto: fotoBase64,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(err => console.error("Erro ao salvar no Firestore: ", err));
     }
 
-    function renderizarHistorico() {
-        let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
-        const container = document.getElementById('historico-lista');
-        container.innerHTML = "";
+    function escutarHistoricoNuvem() {
+        db.collection("medicoes").orderBy("timestamp", "desc").limit(20)
+          .onSnapshot((snapshot) => {
+              const container = document.getElementById('historico-lista');
+              container.innerHTML = "";
+              listaHistoricoCache = [];
 
-        if (historico.length === 0) {
-            container.innerHTML = `<div style="font-size:11px; color:#94a3b8; padding:5px;">Nenhum cliente salvo.</div>`;
-            return;
-        }
+              if (snapshot.empty) {
+                  container.innerHTML = `<div style="font-size:11px; color:#94a3b8; padding:5px;">Nenhum cliente salvo na nuvem ainda.</div>`;
+                  return;
+              }
 
-        historico.forEach((h, index) => {
-            const fotoHtml = h.foto ? `<img src="${h.foto}" class="archive-thumb" onclick="abrirModal('${h.foto}')" title="Ampliar Foto">` : '';
-            container.innerHTML += `
-                <div class="archive-card">
-                    ${fotoHtml}
-                    <div class="archive-info">
-                        <strong>${h.nome}</strong>
-                        <span>DP: ${h.dpTotal}mm (OD: ${h.dnpOD} | OE: ${h.dnpOE}) ${h.co !== 'N/A' ? '- CO: ' + h.co + 'mm' : ''}</span><br>
-                        <span style="font-size:9px; color:#64748b;">${h.data}</span>
-                    </div>
-                    <div class="archive-actions">
-                        <button class="btn-icon" onclick="downloadFicha(${index})" title="Baixar Ficha/Foto"><i class="fa-solid fa-download"></i></button>
-                        <button class="btn-icon" style="color:#25d366;" onclick="reenviarWhatsIndex(${index})" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
-                    </div>
-                </div>
-            `;
-        });
+              snapshot.forEach((doc) => {
+                  let h = doc.data();
+                  listaHistoricoCache.push(h);
+                  let index = listaHistoricoCache.length - 1;
+
+                  const fotoHtml = h.foto ? `<img src="${h.foto}" class="archive-thumb" onclick="abrirModal('${h.foto}')" title="Ampliar Foto">` : '';
+                  
+                  container.innerHTML += `
+                      <div class="archive-card">
+                          ${fotoHtml}
+                          <div class="archive-info">
+                              <strong>${h.nome}</strong>
+                              <span>DP: ${h.dpTotal}mm (OD: ${h.dnpOD} | OE: ${h.dnpOE}) ${h.co !== 'N/A' ? '- CO: ' + h.co + 'mm' : ''}</span><br>
+                              <span style="font-size:9px; color:#64748b;">${h.data || 'Agora'}</span>
+                          </div>
+                          <div class="archive-actions">
+                              <button class="btn-icon" onclick="downloadFicha(${index})" title="Baixar Ficha/Foto"><i class="fa-solid fa-download"></i></button>
+                              <button class="btn-icon" style="color:#25d366;" onclick="reenviarWhatsIndex(${index})" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                          </div>
+                      </div>
+                  `;
+              });
+          }, err => {
+              document.getElementById('historico-lista').innerHTML = `<div style="font-size:11px; color:#ef4444;">Erro ao carregar nuvem. Verifique as Regras do Firestore.</div>`;
+          });
     }
 
     function abrirModal(fotoBase64) {
@@ -442,8 +472,7 @@
     }
 
     function downloadFicha(index) {
-        let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
-        let m = historico[index];
+        let m = listaHistoricoCache[index];
         if (!m || !m.foto) return;
 
         const a = document.createElement('a');
@@ -453,18 +482,10 @@
     }
 
     function reenviarWhatsIndex(index) {
-        let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
-        let m = historico[index];
+        let m = listaHistoricoCache[index];
         if (!m) return;
         const texto = `📐 *Medidas Ópticas (Óticas M&G)*\n\n👤 *Cliente:* ${m.nome}\n👁️ *DNP Olho Direito:* ${m.dnpOD} mm\n👁️ *DNP Olho Esquerdo:* ${m.dnpOE} mm\n📏 *DP Total:* ${m.dpTotal} mm\n🎯 *Altura Focal (CO):* ${m.co} mm\n📅 *Registro:* ${m.data}`;
         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
-    }
-
-    function limparHistorico() {
-        if(confirm("Deseja apagar todo o histórico de registros?")) {
-            localStorage.removeItem('mg_pupila_arquivos');
-            renderizarHistorico();
-        }
     }
 
     function reiniciarCaptura() {
@@ -493,7 +514,7 @@
     }
 
     iniciarCamera();
-    renderizarHistorico();
+    escutarHistoricoNuvem();
 </script>
 </body>
 </html>
