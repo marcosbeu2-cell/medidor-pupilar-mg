@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Óticas M&G - Precision DP 6.0 Full</title>
+    <title>Óticas M&G - Precision DP 6.1 (Smooth)</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,7 +23,6 @@
         h1 { font-size: 19px; color: #fbbf24; margin-bottom: 2px; }
         p.subtitle { font-size: 11px; color: #94a3b8; margin-bottom: 12px; }
 
-        /* Abas */
         .tabs { display: flex; background: #0f172a; padding: 4px; border-radius: 12px; gap: 4px; margin-bottom: 12px; border: 1px solid #334155; }
         .tab-btn { flex: 1; padding: 10px 6px; border: none; background: transparent; color: #94a3b8; font-size: 11px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .tab-btn.active { background: #38bdf8; color: #0f172a; }
@@ -56,7 +55,6 @@
         .btn-action { flex: 1; background: linear-gradient(135deg, #25d366, #128c7e); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-secondary { background: #334155; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; }
 
-        /* Arquivo de Fotos e Clientes */
         .archive-section { margin-top: 16px; text-align: left; background: #0f172a; border-radius: 12px; padding: 12px; border: 1px solid #334155; }
         .archive-header { font-size: 11px; font-weight: 700; color: #fbbf24; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .archive-card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
@@ -67,7 +65,6 @@
         .archive-actions { display: flex; gap: 4px; }
         .btn-icon { background: #334155; color: #38bdf8; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 11px; }
 
-        /* Modal para foto grande */
         .modal { display: none; position: fixed; z-index: 99; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; }
         .modal-img { max-width: 90%; max-height: 80%; border-radius: 12px; border: 2px solid #fbbf24; }
     </style>
@@ -75,8 +72,8 @@
 <body>
 
 <div class="container">
-    <h1><i class="fa-solid fa-crosshairs"></i> Precision DP 6.0</h1>
-    <p class="subtitle">Óticas M&G - Pupilômetro Digital & Marcação de Armação</p>
+    <h1><i class="fa-solid fa-crosshairs"></i> Precision DP 6.1</h1>
+    <p class="subtitle">Óticas M&G - Mapeamento Estável Sem Travamentos</p>
 
     <div class="tabs">
         <button class="tab-btn active" id="tab1" onclick="mudarAba(1)"><i class="fa-solid fa-bolt"></i> 1. Direta (Sem Óculos)</button>
@@ -135,7 +132,6 @@
     </div>
 </div>
 
-<!-- Modal para ver foto ampliada -->
 <div class="modal" id="modal-foto" onclick="fecharModal()">
     <img id="img-modal" class="modal-img">
 </div>
@@ -151,8 +147,8 @@
     let abaAtual = 1;
     let modoCamera = "user"; 
     let fotoTirada = false;
+    let processandoIA = false;
     let cameraStream = null;
-    let ultimaMedidaCalculada = null;
 
     let pontos = {
         pOD: { x: 0, y: 0 },
@@ -177,16 +173,23 @@
     faceMesh.onResults(onResultsMediaPipe);
 
     function mudarAba(numeroAba) {
+        if (abaAtual === numeroAba) return;
         abaAtual = numeroAba;
         document.getElementById('tab1').classList.toggle('active', abaAtual === 1);
         document.getElementById('tab2').classList.toggle('active', abaAtual === 2);
         reiniciarCaptura();
     }
 
-    async function iniciarCamera() {
+    async function encerrarCamera() {
         if (cameraStream) {
             cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
         }
+        videoElement.srcObject = null;
+    }
+
+    async function iniciarCamera() {
+        await encerrarCamera();
         const constraints = {
             video: { facingMode: modoCamera, width: { ideal: 1280 }, height: { ideal: 720 } }
         };
@@ -199,7 +202,8 @@
     }
 
     function capturarETaggear() {
-        if (fotoTirada) return;
+        if (fotoTirada || processandoIA) return;
+        processandoIA = true;
 
         canvasElement.width = videoElement.videoWidth || 640;
         canvasElement.height = videoElement.videoHeight || 480;
@@ -216,17 +220,21 @@
         canvasElement.style.display = 'block';
 
         imagemCongelada = new Image();
-        imagemCongelada.src = canvasElement.toDataURL("image/jpeg");
-
-        statusText.innerText = "🤖 Analisando imagem com IA...";
-        statusText.style.background = "rgba(217, 119, 6, 0.9)";
-
         imagemCongelada.onload = () => {
-            faceMesh.send({ image: imagemCongelada });
+            faceMesh.send({ image: imagemCongelada }).catch(() => {
+                processandoIA = false;
+                reiniciarCaptura();
+            });
         };
+        imagemCongelada.src = canvasElement.toDataURL("image/jpeg", 0.9);
+
+        statusText.innerText = "🤖 Analisando foto...";
+        statusText.style.background = "rgba(217, 119, 6, 0.9)";
     }
 
     function onResultsMediaPipe(results) {
+        processandoIA = false;
+
         if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
             const landmarks = results.multiFaceLandmarks[0];
 
@@ -241,23 +249,27 @@
                 (irisD.y - irisE.y) * canvasElement.height
             );
 
-            mmPorPixel = TAMANHO_IRIS_MM / larguraIrisPx;
+            mmPorPixel = TAMANHO_IRIS_MM / (larguraIrisPx || 1);
             pontos.baseAroY = pontos.pOD.y + (32 / mmPorPixel); 
 
             fotoTirada = true;
             recalcularEDesenhar();
 
-            statusText.innerText = (abaAtual === 1) ? "✅ DNP / DP Calculadas com Sucesso!" : "🎯 Miras Aplicadas! Arraste com o dedo se precisar ajustar";
+            statusText.innerText = (abaAtual === 1) ? "✅ DNP / DP Calculadas com Sucesso!" : "🎯 Miras Aplicadas! Arraste com o dedo se precisar";
             statusText.style.background = "rgba(16, 185, 129, 0.95)";
             btnIniciar.style.display = 'none';
 
         } else {
-            statusText.innerText = "⚠️ Rosto não identificado. Tente outra foto!";
+            fotoTirada = false;
+            statusText.innerText = "⚠️ Rosto não identificado. Tente novamente!";
             statusText.style.background = "rgba(239, 68, 68, 0.9)";
+            btnIniciar.style.display = 'flex';
         }
     }
 
     function recalcularEDesenhar() {
+        if (!imagemCongelada) return;
+
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
         canvasCtx.drawImage(imagemCongelada, 0, 0, canvasElement.width, canvasElement.height);
 
@@ -279,14 +291,11 @@
         document.getElementById('val-dp-total').innerText = dpTotal + " mm";
         document.getElementById('val-co').innerText = (abaAtual === 2) ? (co + " mm") : "--";
 
-        // DESENHAR MIRAS
         if (abaAtual === 1) {
-            // Aba 1: Ponto discreto no centro pupilar
             desenharPontoDiscreto(pontos.pOD.x, pontos.pOD.y, "#38bdf8");
             desenharPontoDiscreto(pontos.pOE.x, pontos.pOE.y, "#38bdf8");
             desenharPontoDiscreto(pontos.pNariz.x, pontos.pNariz.y, "#fbbf24");
         } else {
-            // Aba 2: Marcação estilo Canetão / Laboratório com linha do aro
             desenharCruzMira(pontos.pOD.x, pontos.pOD.y, "#fbbf24", "OD");
             desenharCruzMira(pontos.pOE.x, pontos.pOE.y, "#fbbf24", "OE");
             desenharCruzMira(pontos.pNariz.x, pontos.pNariz.y, "#38bdf8", "Nariz");
@@ -303,7 +312,6 @@
             canvasCtx.fillText("Base do Aro", pontos.pOD.x - 50, pontos.baseAroY + 16);
         }
 
-        // SALVAR NO HISTÓRICO AUTOMATICAMENTE
         salvarRegistroAtual(dnpOD, dnpOE, dpTotal, (abaAtual === 2 ? co : "N/A"));
     }
 
@@ -336,7 +344,6 @@
         canvasCtx.fillText(texto, x + 16, y - 6);
     }
 
-    // ARRASTAR PONTOS NO TOUCH
     canvasElement.addEventListener('pointerdown', (e) => {
         if (!fotoTirada) return;
         const rect = canvasElement.getBoundingClientRect();
@@ -373,18 +380,24 @@
 
     canvasElement.addEventListener('pointerup', () => { pontoArrastando = null; });
 
-    // SISTEMA DE ARQUIVOS E SALVAMENTO
     function salvarRegistroAtual(dnpOD, dnpOE, dpTotal, co) {
         let nome = document.getElementById('cliente_nome').value.trim() || "Cliente M&G";
         let dataHora = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
         let modoTexto = (abaAtual === 1) ? "Direta" : "Com Óculos";
-        let fotoBase64 = canvasElement.toDataURL("image/jpeg", 0.85);
+        let fotoBase64 = canvasElement.toDataURL("image/jpeg", 0.65); // Compressão otimizada
 
-        ultimaMedidaCalculada = { nome, dnpOD, dnpOE, dpTotal, co, data: `${dataHora} (${modoTexto})`, foto: fotoBase64 };
+        let registro = { nome, dnpOD, dnpOE, dpTotal, co, data: `${dataHora} (${modoTexto})`, foto: fotoBase64 };
 
         let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
-        historico.unshift(ultimaMedidaCalculada);
-        if (historico.length > 20) historico.pop();
+        
+        // Remove item duplicado do mesmo ciclo recente se existir
+        if (historico.length > 0 && historico[0].nome === nome && historico[0].data === registro.data) {
+            historico[0] = registro;
+        } else {
+            historico.unshift(registro);
+        }
+
+        if (historico.length > 15) historico.pop();
         localStorage.setItem('mg_pupila_arquivos', JSON.stringify(historico));
 
         renderizarHistorico();
@@ -456,17 +469,22 @@
 
     function reiniciarCaptura() {
         fotoTirada = false;
+        processandoIA = false;
+        imagemCongelada = null;
+
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
         videoElement.style.display = 'block';
         canvasElement.style.display = 'none';
         btnIniciar.style.display = 'flex';
         statusText.innerText = "📸 Centralize o rosto e tire a foto";
         statusText.style.background = "rgba(15, 23, 42, 0.9)";
+        
         iniciarCamera();
     }
 
     function alternarCamera() {
         modoCamera = (modoCamera === "user") ? "environment" : "user";
-        iniciarCamera();
+        reiniciarCaptura();
     }
 
     function enviarWhatsApp() {
