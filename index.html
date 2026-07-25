@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Óticas M&G - Medidor Pupilar Precision 2.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Óticas M&G - Medidor Pupilar Precision 3.0</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,52 +13,83 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: #0f172a; color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 15px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #0f172a; color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 12px; }
 
         .container {
             width: 100%;
             max-width: 520px;
             background: #1e293b;
             border-radius: 20px;
-            padding: 20px;
+            padding: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             text-align: center;
             border: 1px solid #334155;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
-        h1 { font-size: 20px; color: #fbbf24; margin-bottom: 4px; }
-        p.subtitle { font-size: 12px; color: #94a3b8; margin-bottom: 15px; }
+        h1 { font-size: 19px; color: #fbbf24; margin-bottom: 2px; }
+        p.subtitle { font-size: 11px; color: #94a3b8; margin-bottom: 12px; }
+
+        /* Abas de Navegação */
+        .tabs {
+            display: flex;
+            background: #0f172a;
+            padding: 4px;
+            border-radius: 12px;
+            gap: 4px;
+            margin-bottom: 12px;
+            border: 1px solid #334155;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px 6px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .tab-btn.active {
+            background: #38bdf8;
+            color: #0f172a;
+        }
 
         .controls-top {
             display: flex;
             gap: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .input-group { text-align: left; flex: 1; }
-        .input-group label { font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 5px; display: block; }
+        .input-group label { font-size: 10px; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 4px; display: block; }
         .form-control {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border-radius: 8px;
             border: 1px solid #334155;
             background: #0f172a;
             color: white;
             outline: none;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .btn-cam-switch {
             background: #334155;
             color: #fbbf24;
             border: 1px solid #475569;
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             align-self: flex-end;
             display: flex;
             align-items: center;
@@ -68,7 +99,7 @@
         .camera-wrapper {
             position: relative;
             width: 100%;
-            height: 340px;
+            height: 320px;
             background: #000;
             border-radius: 16px;
             overflow: hidden;
@@ -76,7 +107,7 @@
             align-items: center;
             justify-content: center;
             border: 2px solid #334155;
-            transition: border-color 0.3s;
+            touch-action: none;
         }
         .camera-wrapper.aligned { border-color: #10b981; }
 
@@ -85,27 +116,25 @@
 
         .face-overlay {
             position: absolute;
-            width: 170px;
-            height: 230px;
+            width: 160px;
+            height: 220px;
             border: 3px dashed rgba(255, 255, 255, 0.4);
             border-radius: 50%;
             pointer-events: none;
             box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55);
-            transition: border-color 0.3s;
         }
-        .camera-wrapper.aligned .face-overlay { border-color: #10b981; }
 
         .guide-text {
             position: absolute;
-            bottom: 12px;
+            bottom: 10px;
             background: rgba(15, 23, 42, 0.9);
             color: #fff;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
             border: 1px solid #334155;
-            transition: all 0.3s;
+            pointer-events: none;
         }
 
         .countdown-overlay {
@@ -115,6 +144,7 @@
             color: #fbbf24;
             text-shadow: 0 4px 20px rgba(0,0,0,0.8);
             display: none;
+            pointer-events: none;
         }
 
         .btn-start-measure {
@@ -122,87 +152,86 @@
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             font-weight: 800;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
-            margin-top: 12px;
+            margin-top: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            gap: 8px;
         }
 
         .results-box {
-            margin-top: 15px;
+            margin-top: 12px;
             background: #0f172a;
-            border-radius: 14px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 12px;
             border: 1px solid #334155;
         }
 
         .results-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 8px;
         }
 
         .metric-card {
             background: #1e293b;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 8px;
+            border-radius: 8px;
             border: 1px solid #334155;
         }
-        .metric-card .title { font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700; }
-        .metric-card .value { font-size: 20px; color: #38bdf8; font-weight: 800; margin-top: 4px; }
+        .metric-card .title { font-size: 9px; color: #94a3b8; text-transform: uppercase; font-weight: 700; }
+        .metric-card .value { font-size: 18px; color: #38bdf8; font-weight: 800; margin-top: 2px; }
         .metric-card.highlight .value { color: #fbbf24; }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-group { display: flex; gap: 8px; margin-top: 12px; }
 
         .btn-action {
             flex: 1;
             background: linear-gradient(135deg, #25d366, #128c7e);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
         .btn-secondary {
             background: #334155;
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
         }
 
         /* Arquivo de Clientes */
         .archive-section {
-            margin-top: 20px;
+            margin-top: 16px;
             text-align: left;
             background: #0f172a;
-            border-radius: 14px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 12px;
             border: 1px solid #334155;
         }
         .archive-header {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: #fbbf24;
             text-transform: uppercase;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -211,53 +240,73 @@
             background: #1e293b;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .archive-info { font-size: 12px; }
-        .archive-info strong { color: #fff; font-size: 13px; display: block; }
-        .archive-info span { color: #94a3b8; font-size: 11px; }
-        .archive-actions { display: flex; gap: 6px; }
+        .archive-info { font-size: 11px; }
+        .archive-info strong { color: #fff; font-size: 12px; display: block; }
+        .archive-info span { color: #94a3b8; font-size: 10px; }
         .btn-icon {
             background: #334155;
-            color: #fbbf24;
+            color: #25d366;
             border: none;
-            padding: 6px 10px;
+            padding: 6px 8px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
+        }
+
+        .instruction-box {
+            font-size: 11px;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: none;
+            border: 1px solid rgba(56, 189, 248, 0.3);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1><i class="fa-solid fa-crosshairs"></i> Precision DP 2.1</h1>
-    <p class="subtitle">Óticas M&G - Medidor Pupilar Independente</p>
+    <h1><i class="fa-solid fa-crosshairs"></i> Precision DP 3.0</h1>
+    <p class="subtitle">Óticas M&G - Sistema de Medição Pupilar</p>
+
+    <!-- ABAS DE NAVEGAÇÃO -->
+    <div class="tabs">
+        <button class="tab-btn active" id="tab1" onclick="mudarAba(1)"><i class="fa-solid fa-bolt"></i> 1. Direta (Sem Óculos)</button>
+        <button class="tab-btn" id="tab2" onclick="mudarAba(2)"><i class="fa-solid fa-pen-ruler"></i> 2. Canetão Lente (Com Óculos)</button>
+    </div>
 
     <div class="controls-top">
         <div class="input-group">
             <label>Nome do Cliente</label>
-            <input type="text" id="cliente_nome" class="form-control" placeholder="Ex: Maria Silva">
+            <input type="text" id="cliente_nome" class="form-control" placeholder="Ex: Cliente M&G">
         </div>
         <button class="btn-cam-switch" onclick="alternarCamera()"><i class="fa-solid fa-camera-rotate"></i> Câmera</button>
+    </div>
+
+    <div class="instruction-box" id="instrucao-canetao">
+        👆 <strong>Modo Canetão Ativo:</strong> Tire a foto com o cliente usando a armação. Depois, você poderá <u>arrastar com o dedo</u> as miras na tela para conferir os pontos exatos!
     </div>
 
     <div class="camera-wrapper" id="cam-wrapper">
         <video id="video" playsinline></video>
         <canvas id="canvas"></canvas>
-        <div class="face-overlay"></div>
+        <div class="face-overlay" id="face-oval"></div>
         <div class="countdown-overlay" id="countdown">3</div>
-        <div class="guide-text" id="status-text">Aguardando início... Clique no botão abaixo</div>
+        <div class="guide-text" id="status-text">Aguardando início...</div>
     </div>
 
-    <button class="btn-start-measure" id="btn-iniciar" onclick="iniciarLeituraManual()"><i class="fa-solid fa-play"></i> INICIAR MEDIÇÃO</button>
+    <button class="btn-start-measure" id="btn-iniciar" onclick="iniciarLeituraManual()"><i class="fa-solid fa-play"></i> INICIAR CAPTURA</button>
 
     <div class="results-box">
-        <div style="font-size: 11px; font-weight: bold; color: #fbbf24; text-transform: uppercase;">Resultados do Cliente:</div>
+        <div style="font-size: 10px; font-weight: bold; color: #fbbf24; text-transform: uppercase;" id="titulo-resultados">Resultados do Cliente:</div>
         
         <div class="results-grid">
             <div class="metric-card">
@@ -280,15 +329,14 @@
     </div>
 
     <div class="btn-group">
-        <button class="btn-secondary" onclick="reiniciarCaptura()"><i class="fa-solid fa-rotate-right"></i> Nova Leitura</button>
+        <button class="btn-secondary" onclick="reiniciarCaptura()"><i class="fa-solid fa-rotate-right"></i> Nova Foto</button>
         <button class="btn-action" onclick="enviarWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp</button>
     </div>
 
-    <!-- ABA DE CLIENTES ARQUIVADOS -->
     <div class="archive-section">
         <div class="archive-header">
-            <span><i class="fa-solid fa-folder-open"></i> Arquivo de Clientes Salvos</span>
-            <span onclick="limparHistorico()" style="color:#ef4444; cursor:pointer; font-size:10px;">Limpar Tudo</span>
+            <span><i class="fa-solid fa-folder-open"></i> Arquivo de Clientes</span>
+            <span onclick="limparHistorico()" style="color:#ef4444; cursor:pointer; font-size:10px;">Limpar</span>
         </div>
         <div id="historico-lista"></div>
     </div>
@@ -304,13 +352,22 @@
     const btnIniciar = document.getElementById('btn-iniciar');
 
     const TAMANHO_IRIS_MM = 11.7;
-    let modoCamera = "user"; // "user" (frontal) ou "environment" (traseira)
-    let medindoAtivo = false; // Controle manual do botão "Iniciar"
+    let abaAtual = 1; // 1 = Direto, 2 = Canetão Digital
+    let modoCamera = "user"; 
+    let medindoAtivo = false;
     let capturaTravada = false;
     let emContagem = false;
     let timerContagem = null;
     let cameraInstance = null;
     let ultimaMedidaCalculada = null;
+
+    // Pontos Arrastáveis do Canetão Digital (Aba 2)
+    let pontoOD = { x: 0, y: 0 };
+    let pontoOE = { x: 0, y: 0 };
+    let pontoNariz = { x: 0, y: 0 };
+    let linhaBaseAroY = 0;
+    let mmPorPixelRef = 0.1;
+    let pontoSendoArrastado = null; // 'OD', 'OE', 'NARIZ', 'BASE'
 
     const faceMesh = new FaceMesh({
         locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
@@ -325,8 +382,25 @@
 
     faceMesh.onResults(onResults);
 
+    function mudarAba(numeroAba) {
+        abaAtual = numeroAba;
+        document.getElementById('tab1').classList.toggle('active', abaAtual === 1);
+        document.getElementById('tab2').classList.toggle('active', abaAtual === 2);
+        
+        document.getElementById('instrucao-canetao').style.display = (abaAtual === 2) ? 'block' : 'none';
+        document.getElementById('face-oval').style.display = (abaAtual === 1) ? 'block' : 'none';
+
+        reiniciarCaptura();
+    }
+
     function onResults(results) {
-        if (capturaTravada) return;
+        if (capturaTravada) {
+            // No modo Canetão (Aba 2) com foto travada, apenas desenha as miras interativas
+            if (abaAtual === 2) {
+                desenharMirasCanetao();
+            }
+            return;
+        }
 
         canvasElement.width = videoElement.videoWidth;
         canvasElement.height = videoElement.videoHeight;
@@ -334,7 +408,6 @@
         canvasCtx.save();
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-        // Se for câmera frontal, espelha para navegação natural
         if (modoCamera === "user") {
             canvasCtx.translate(canvasElement.width, 0);
             canvasCtx.scale(-1, 1);
@@ -342,7 +415,6 @@
 
         canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-        // Só processa se o usuário clicou em INICIAR
         if (!medindoAtivo) {
             canvasCtx.restore();
             return;
@@ -353,13 +425,11 @@
 
             const pupilaDireita = landmarks[468];
             const pupilaEsquerda = landmarks[473];
-            const ponteNariz = landmarks[6];
+            const ponteNarizLm = landmarks[6];
 
             const irisDireitaEsquerda = landmarks[469];
             const irisDireitaDireita = landmarks[471];
 
-            const inclinacaoY = Math.abs((pupilaDireita.y - pupilaEsquerda.y) * canvasElement.height);
-            
             const larguraIrisPixels = Math.hypot(
                 (irisDireitaDireita.x - irisDireitaEsquerda.x) * canvasElement.width,
                 (irisDireitaDireita.y - irisDireitaEsquerda.y) * canvasElement.height
@@ -367,11 +437,7 @@
 
             let estaAlinhado = true;
 
-            if (inclinacaoY > 6) {
-                statusText.innerText = "⚠️ Mantenha a cabeça reta (sem inclinar)";
-                statusText.style.background = "rgba(225, 29, 72, 0.9)";
-                estaAlinhado = false;
-            } else if (larguraIrisPixels < 12) {
+            if (larguraIrisPixels < 12) {
                 statusText.innerText = "🔍 Aproxime um pouco o celular";
                 statusText.style.background = "rgba(217, 119, 6, 0.9)";
                 estaAlinhado = false;
@@ -396,7 +462,7 @@
 
             desenharPonto(pupilaDireita, "#fbbf24");
             desenharPonto(pupilaEsquerda, "#fbbf24");
-            desenharPonto(ponteNariz, "#38bdf8");
+            desenharPonto(ponteNarizLm, "#38bdf8");
 
         } else {
             camWrapper.classList.remove('aligned');
@@ -411,7 +477,7 @@
         medindoAtivo = true;
         capturaTravada = false;
         btnIniciar.style.display = 'none';
-        statusText.innerText = "Alinhe o rosto dentro do círculo...";
+        statusText.innerText = "Centralize e segure parado...";
     }
 
     function iniciarContagem(landmarks) {
@@ -444,7 +510,7 @@
 
         const pupilaDireita = landmarks[468];
         const pupilaEsquerda = landmarks[473];
-        const ponteNariz = landmarks[6];
+        const ponteNarizLm = landmarks[6];
 
         const irisDireitaEsquerda = landmarks[469];
         const irisDireitaDireita = landmarks[471];
@@ -454,34 +520,90 @@
             (irisDireitaDireita.y - irisDireitaEsquerda.y) * canvasElement.height
         );
 
-        const mmPorPixel = TAMANHO_IRIS_MM / larguraIrisPixels;
+        mmPorPixelRef = TAMANHO_IRIS_MM / larguraIrisPixels;
 
-        const dnpODPixels = Math.abs((pupilaDireita.x - ponteNariz.x) * canvasElement.width);
-        const dnpOEPixels = Math.abs((pupilaEsquerda.x - ponteNariz.x) * canvasElement.width);
-        const dpTotalPixels = Math.abs((pupilaEsquerda.x - pupilaDireita.x) * canvasElement.width);
-        const coPixels = Math.abs((pupilaDireita.y - (ponteNariz.y + 0.04)) * canvasElement.height);
+        // Configura coordenadas em pixels
+        pontoOD = { x: pupilaDireita.x * canvasElement.width, y: pupilaDireita.y * canvasElement.height };
+        pontoOE = { x: pupilaEsquerda.x * canvasElement.width, y: pupilaEsquerda.y * canvasElement.height };
+        pontoNariz = { x: ponteNarizLm.x * canvasElement.width, y: ponteNarizLm.y * canvasElement.height };
+        linhaBaseAroY = pontoOD.y + (35 / mmPorPixelRef); // Estimativa inicial da base do aro
 
-        const dnpOD = (dnpODPixels * mmPorPixel).toFixed(1);
-        const dnpOE = (dnpOEPixels * mmPorPixel).toFixed(1);
-        const dpTotal = (dpTotalPixels * mmPorPixel).toFixed(1);
-        const co = (coPixels * mmPorPixel).toFixed(1);
+        recalcularMedidasPelasMiras();
+
+        statusText.innerText = (abaAtual === 1) ? "📸 FOTO CAPTURADA COM SUCESSO!" : "🎯 CANETÃO DIGITAL ATIVO! Arraste os pontos na tela";
+        statusText.style.background = "rgba(16, 185, 129, 0.95)";
+
+        btnIniciar.style.display = 'flex';
+        btnIniciar.innerHTML = `<i class="fa-solid fa-rotate-right"></i> REPETIR FOTO`;
+    }
+
+    function recalcularMedidasPelasMiras() {
+        const dnpODPixels = Math.abs(pontoOD.x - pontoNariz.x);
+        const dnpOEPixels = Math.abs(pontoOE.x - pontoNariz.x);
+        const dpTotalPixels = Math.abs(pontoOE.x - pontoOD.x);
+        const coPixels = Math.abs(linhaBaseAroY - pontoOD.y);
+
+        const dnpOD = (dnpODPixels * mmPorPixelRef).toFixed(1);
+        const dnpOE = (dnpOEPixels * mmPorPixelRef).toFixed(1);
+        const dpTotal = (dpTotalPixels * mmPorPixelRef).toFixed(1);
+        const co = (coPixels * mmPorPixelRef).toFixed(1);
 
         document.getElementById('val-dnp-od').innerText = dnpOD + " mm";
         document.getElementById('val-dnp-oe').innerText = dnpOE + " mm";
         document.getElementById('val-dp-total').innerText = dpTotal + " mm";
         document.getElementById('val-co').innerText = co + " mm";
 
-        statusText.innerText = "📸 LEITURA CONCLUÍDA E SALVA!";
-        statusText.style.background = "rgba(16, 185, 129, 0.95)";
-
-        let nome = document.getElementById('cliente_nome').value.trim() || "Cliente Sem Nome";
+        let nome = document.getElementById('cliente_nome').value.trim() || "Cliente M&G";
         let dataHora = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
         
-        ultimaMedidaCalculada = { nome, dnpOD, dnpOE, dpTotal, co, data: dataHora };
+        let modoTexto = (abaAtual === 1) ? "Direta" : "Canetão na Armação";
+        ultimaMedidaCalculada = { nome, dnpOD, dnpOE, dpTotal, co, data: `${dataHora} (${modoTexto})` };
 
         salvarNoHistorico(ultimaMedidaCalculada);
-        btnIniciar.style.display = 'flex';
-        btnIniciar.innerHTML = `<i class="fa-solid fa-rotate-right"></i> REPETIR MEDIÇÃO`;
+    }
+
+    // DESENHA O CANETÃO DIGITAL INTERATIVO NA TELA (ABA 2)
+    function desenharMirasCanetao() {
+        // Redesenha os pontos
+        desenharMira(pontoOD.x, pontoOD.y, "#fbbf24", "OD");
+        desenharMira(pontoOE.x, pontoOE.y, "#fbbf24", "OE");
+        desenharMira(pontoNariz.x, pontoNariz.y, "#38bdf8", "Nariz");
+
+        // Desenha linha da base da armação
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(0, linhaBaseAroY);
+        canvasCtx.lineTo(canvasElement.width, linhaBaseAroY);
+        canvasCtx.strokeStyle = "#ef4444";
+        canvasCtx.lineWidth = 2;
+        canvasCtx.setLineDash([6, 6]);
+        canvasCtx.stroke();
+        canvasCtx.setLineDash([]);
+
+        canvasCtx.fillStyle = "#ef4444";
+        canvasCtx.font = "bold 12px Inter";
+        canvasCtx.fillText("↕ Base do Aro (CO)", 10, linhaBaseAroY - 6);
+    }
+
+    function desenharMira(x, y, cor, rotulo) {
+        canvasCtx.beginPath();
+        canvasCtx.arc(x, y, 14, 0, 2 * Math.PI);
+        canvasCtx.fillStyle = "rgba(0,0,0,0.4)";
+        canvasCtx.fill();
+        canvasCtx.strokeStyle = cor;
+        canvasCtx.lineWidth = 2;
+        canvasCtx.stroke();
+
+        // Cruz
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(x - 20, y); canvasCtx.lineTo(x + 20, y);
+        canvasCtx.moveTo(x, y - 20); canvasCtx.lineTo(x, y + 20);
+        canvasCtx.strokeStyle = cor;
+        canvasCtx.lineWidth = 1.5;
+        canvasCtx.stroke();
+
+        canvasCtx.fillStyle = cor;
+        canvasCtx.font = "bold 11px Inter";
+        canvasCtx.fillText(rotulo, x + 16, y + 4);
     }
 
     function desenharPonto(landmark, cor) {
@@ -491,13 +613,42 @@
         canvasCtx.fill();
     }
 
+    // ARRASTAR COM O DEDO NO CANVAS (EVENTOS DE TOQUE)
+    canvasElement.addEventListener('pointerdown', (e) => {
+        if (!capturaTravada || abaAtual !== 2) return;
+        const rect = canvasElement.getBoundingClientRect();
+        const touchX = (e.clientX - rect.left) * (canvasElement.width / rect.width);
+        const touchY = (e.clientY - rect.top) * (canvasElement.height / rect.height);
+
+        if (Math.hypot(touchX - pontoOD.x, touchY - pontoOD.y) < 30) pontoSendoArrastado = 'OD';
+        else if (Math.hypot(touchX - pontoOE.x, touchY - pontoOE.y) < 30) pontoSendoArrastado = 'OE';
+        else if (Math.hypot(touchX - pontoNariz.x, touchY - pontoNariz.y) < 30) pontoSendoArrastado = 'NARIZ';
+        else if (Math.abs(touchY - linhaBaseAroY) < 25) pontoSendoArrastado = 'BASE';
+    });
+
+    canvasElement.addEventListener('pointermove', (e) => {
+        if (!pontoSendoArrastado) return;
+        const rect = canvasElement.getBoundingClientRect();
+        const touchX = (e.clientX - rect.left) * (canvasElement.width / rect.width);
+        const touchY = (e.clientY - rect.top) * (canvasElement.height / rect.height);
+
+        if (pontoSendoArrastado === 'OD') { pontoOD.x = touchX; pontoOD.y = touchY; }
+        else if (pontoSendoArrastado === 'OE') { pontoOE.x = touchX; pontoOE.y = touchY; }
+        else if (pontoSendoArrastado === 'NARIZ') { pontoNariz.x = touchX; }
+        else if (pontoSendoArrastado === 'BASE') { linhaBaseAroY = touchY; }
+
+        recalcularMedidasPelasMiras();
+    });
+
+    canvasElement.addEventListener('pointerup', () => { pontoSendoArrastado = null; });
+
     function reiniciarCaptura() {
         capturaTravada = false;
         medindoAtivo = false;
-        statusText.innerText = "Aguardando início... Clique no botão abaixo";
+        statusText.innerText = "Aguardando início...";
         camWrapper.classList.remove('aligned');
         btnIniciar.style.display = 'flex';
-        btnIniciar.innerHTML = `<i class="fa-solid fa-play"></i> INICIAR MEDIÇÃO`;
+        btnIniciar.innerHTML = `<i class="fa-solid fa-play"></i> INICIAR CAPTURA`;
     }
 
     function alternarCamera() {
@@ -533,7 +684,7 @@
         container.innerHTML = "";
 
         if (historico.length === 0) {
-            container.innerHTML = `<div style="font-size:12px; color:#94a3b8; padding:5px;">Nenhum cliente arquivado.</div>`;
+            container.innerHTML = `<div style="font-size:11px; color:#94a3b8; padding:5px;">Nenhum cliente no arquivo.</div>`;
             return;
         }
 
@@ -543,9 +694,9 @@
                     <div class="archive-info">
                         <strong>${h.nome}</strong>
                         <span>DP: ${h.dpTotal}mm (OD: ${h.dnpOD} | OE: ${h.dnpOE}) - CO: ${h.co}mm</span><br>
-                        <span style="font-size:10px; color:#64748b;">${h.data}</span>
+                        <span style="font-size:9px; color:#64748b;">${h.data}</span>
                     </div>
-                    <div class="archive-actions">
+                    <div>
                         <button class="btn-icon" onclick="reenviarWhatsIndex(${index})" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
                     </div>
                 </div>
@@ -557,12 +708,12 @@
         let historico = JSON.parse(localStorage.getItem('mg_pupila_arquivos') || '[]');
         let m = historico[index];
         if (!m) return;
-        const texto = `📐 *Medidas Ópticas Arquivadas (Óticas M&G)*\n\n👤 *Cliente:* ${m.nome}\n👁️ *DNP Olho Direito:* ${m.dnpOD} mm\n👁️ *DNP Olho Esquerdo:* ${m.dnpOE} mm\n📏 *DP Total:* ${m.dpTotal} mm\n🎯 *Altura Focal (CO):* ${m.co} mm\n📅 *Data:* ${m.data}`;
+        const texto = `📐 *Medidas Ópticas (Óticas M&G)*\n\n👤 *Cliente:* ${m.nome}\n👁️ *DNP Olho Direito:* ${m.dnpOD} mm\n👁️ *DNP Olho Esquerdo:* ${m.dnpOE} mm\n📏 *DP Total:* ${m.dpTotal} mm\n🎯 *Altura Focal (CO):* ${m.co} mm\n📅 *Registro:* ${m.data}`;
         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
     }
 
     function limparHistorico() {
-        if(confirm("Tem certeza que deseja apagar todo o arquivo de clientes?")) {
+        if(confirm("Deseja apagar todo o arquivo de clientes?")) {
             localStorage.removeItem('mg_pupila_arquivos');
             renderizarHistorico();
         }
@@ -570,13 +721,12 @@
 
     function enviarWhatsApp() {
         if (!ultimaMedidaCalculada) {
-            alert("Realize a medição de um cliente primeiro.");
+            alert("Tire uma foto e gere as medidas primeiro.");
             return;
         }
         reenviarWhatsIndex(0);
     }
 
-    // Inicialização
     iniciarCamera();
     renderizarHistorico();
 </script>
